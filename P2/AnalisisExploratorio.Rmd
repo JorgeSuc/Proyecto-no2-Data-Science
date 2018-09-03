@@ -124,6 +124,7 @@ h2016[c("Standard.Error","Whisker.high","Whisker.low")] <- NA
 h2017[c("Standard.Error","Lower.Confidence.Interval","Upper.Confidence.Interval","Region")] <- NA
 
 hWorld <- rbind(h2015,h2016,h2017)
+ 
 ```
 
 
@@ -264,7 +265,40 @@ hist(hWorld$Trust..Government.Corruption.)
 hist(hWorld$Generosity)
 
 ```
+### Interpretación de histogramas 
 
+
+No.1 Punteo de Felicidad
+
+Vemos que, en su mayoría existen más países en el rango de 5 y 6 en este rango.
+
+
+No.2 Producto Interno Bruto
+
+Se puede observar que, muy pocos países tienen un índice per capita entre 1.5 y 2
+y que la mayoría de paises tienen un índice de 0.7 y 1.
+
+
+No.3 Familia 
+
+Vemos que la mayoría de los datos, su índice de familia está entre 0.6 y 1.4
+
+No.4 Esperanza de vida
+
+La mayoría de los datos que se tienen de países nos muestran que la mayoría de las personas tienen una esperanza de vida entre el rango de 0.55 y un máximo de 0.9
+
+No.5 Libertad
+
+Vemos que, en su mayoría de todos lod datos, estos se encuentran con muy poca libertad puesto que la mayoría son menores a un rango de 0.4
+
+No. 6 Trust Goverment Corruption
+
+  Vemos en la gráfica que muy pocos datos se tienen de países que son poco corruptos y que la mayoría tiene un índice de corrupción muy alto.
+  
+No. 7 Histograma de Generosidad
+
+Se puede observar en el histograma que la mayoría de los datos que se tienen son datos de los países que no son tan generosos que digamos.
+ 
 
 ### Correlación entre variables
 
@@ -275,6 +309,7 @@ library(corrplot)
 #obtenemos las variables numericas
 hWorldNum <- hWorld[,(unlist(lapply(hWorld, is.numeric)))]
 hWorldNum[is.na(hWorldNum)] <- 0 #Cambiamos NA por 0
+View(hWorldNum)
 #Renombramos las columnas
 colnames(hWorldNum)[1:15] <- c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15")
 #Calculamos la correlacion entre las variables
@@ -344,17 +379,73 @@ plot(x=paises[[i]]$year, y=paises[[i]]$population, ylab="Población", xlab="Años"
 
 
 eza <- prop.table(hWorldNum)
-jpeg(filename="correlogramon.jpeg", width = 1920, height = 1080)
+
 View(cWorld)
 View(hWorldNum)
 
-plot(eza[,1:15], col="blue" , main= "Tabla de Frecuencias")
+silent <-hWorldNum
+View(silent)
+
+silent$`11` <- NULL
+
+
+zip <- prop.table(silent)
+
+jpeg(filename="corre.jpeg", width = 2048, height = 1080)
+
+plot(zip[,1:14], col="blue" , main= "Tabla de Frecuencias")
+dev.off()
+
+cor(zip$`7`,zip$`8`)
+cor(zip$`4`,zip$`5`)
+cor(zip$`2`,zip$`3`)
+cor(zip$`5`,zip$`6`)
+cor(zip$`10`,zip$`12`)
+cor(zip$`4`,zip$`6`)
+cor(zip$`5`,zip$`7`)
+cor(zip)
 
 
 
-#ftable(eza)
+
+
 
 ```
+## Tabla de Frecuencias
+
+Se puede observar que en la tabla de frecuencias las variables que son correlacionadas y las que son inversamente proporcional. 
+
+Por ejemplo:
+
+La variable 8 y 7 tienen una correlación de  0.4904
+las cuales serían "libertad" "Confianza de un gobierno corrupto"
+
+Las otras variables, 4 y 5 tienen una correlación de  0.585449
+las cuales serían "Producto interno Bruto" "Familia"
+
+Las otras variables, 7 y 2 tienen una correlación de  0.585449
+las cuales serían "Libertad" "Factor de felicidad"
+
+Las otras variables, 5  y 6 tienen una correlación de  0.4863827
+las cuales serían "Familia" "Esperanza de vida"
+
+Las otras variables, 4 y 6 tienen una correlación de  0.7854496
+las cuales serían "Producto Interno Bruto" "Esperanza de vida"
+
+Las otras variables, 5 y 7 tienen una correlación de  0.42537669
+las cuales serían "Familia" "Libertad"
+
+Las otras variables, 8 y 4 tienen una correlación de  0.42537669
+las cuales serían "Confianza del gobierno corrupto" "Producto Interno Bruto"
+
+
+
+
+
+
+
+
+
 
 ##Countries of the World
 
