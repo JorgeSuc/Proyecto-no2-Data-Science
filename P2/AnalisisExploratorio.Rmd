@@ -276,28 +276,28 @@ Vemos que, en su mayoría existen más países en el rango de 5 y 6 en este rango.
 No.2 Producto Interno Bruto
 
 Se puede observar que, muy pocos países tienen un índice per capita entre 1.5 y 2
-y que la mayoría de paises tienen un índice de 0.7 y 1.
+y que la mayoría de paises tienen un índice de 0.7 y 1. Puesto que ese peso decidieron darle
 
 
 No.3 Familia 
 
-Vemos que la mayoría de los datos, su índice de familia está entre 0.6 y 1.4
+Vemos que la mayoría de los datos, su índice de familia está entre 0.6 y 1.4 porque ese peso quisieron darle
 
 No.4 Esperanza de vida
 
-La mayoría de los datos que se tienen de países nos muestran que la mayoría de las personas tienen una esperanza de vida entre el rango de 0.55 y un máximo de 0.9
+La mayoría de los datos que se tienen de países nos muestran que la mayoría de las personas tienen una esperanza de vida entre el rango de 0.55 y un máximo de 0.9. Puesto que esperan que mientras más esperanza de vida se tiene más feliz se es
 
 No.5 Libertad
 
-Vemos que, en su mayoría de todos lod datos, estos se encuentran con muy poca libertad puesto que la mayoría son menores a un rango de 0.4
+Vemos que, en su mayoría de todos lod datos, la gente le puso más peso a las libertad en sus paises para ser felices
 
 No. 6 Trust Goverment Corruption
 
-  Vemos en la gráfica que muy pocos datos se tienen de países que son poco corruptos y que la mayoría tiene un índice de corrupción muy alto.
+  Vemos en la gráfica que muy pocos datos se tienen de países que le importa la corupción para ser felices 
   
 No. 7 Histograma de Generosidad
 
-Se puede observar en el histograma que la mayoría de los datos que se tienen son datos de los países que no son tan generosos que digamos.
+Se puede observar en el histograma que la mayoría de los datos que se tienen son datos de los países que no son tan generosos que digamos. Pocos países se preocupan por ser generosos para ser felices.
  
 
 ### Correlación entre variables
