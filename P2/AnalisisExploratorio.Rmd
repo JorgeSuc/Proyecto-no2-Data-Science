@@ -1,0 +1,480 @@
+
+---
+title: "Proyecto 2 - Analisis Exploratorio"
+author: "Manuel Valenzuela 15072, Davis Álvarez 15842, Jorge Súchite 15293"
+date: "23 de agosto de 2018"
+header-includes:
+   - \usepackage{tabularx}
+   - \usepackage{booktabs}
+   - \usepackage{graphicx}
+   - \usepackage{adjustbox}
+   - \usepackage{longtable}
+   
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Descripción del Tema
+Para este segundo proyecto propone observar la población de los paises del mundo a lo largo de los años y así mismo su área superficial, con estos datos obtener una densidad poblacional y ver si esta esta relacionada de alguna manera con la felicidad de las personas. Con estos datos se tratará de hacer 2 pronósticos. El primero de la población en base a su propio comportamiento; y el segundo, de la felicidad del mundo en base a su propio comportamiento y así mismo a la densidad poblacional a lo largo del tiempo.
+
+Para hacer esto se uilizarán 3 datasets, el primero es \href{https://www.kaggle.com/unsdsn/world-happiness/home}{World Happiness Report}, el cual es un dataset que contiene una puntuación de felicidad anotada según producción económica, apoyo social, etc. El segundo es \href{https://www.kaggle.com/centurion1986/countries-population}{Countries Population}, el cual contiene la población de cada país a lo largo de los años,y por último, el tercero sería \href{https://www.kaggle.com/fernandol/countries-of-the-world}{Countries of the World}, del cual se obtendría el área superficial de cada país. 
+
+#Problema Científico
+Lo que se buscará realizar con este proyecto es observar la densidad poblacional y la felicidad de las personas de cada país a lo largo del tiempo, ver si tienen algún tipo de relación entre sí y tratar de pronosticar que tan felices serán las personas en los años próximos. Así mismo, observando el comportamiento de la población a lo largo de los años se buscará pronosticar la población de los paises en los próximos años.
+
+#Objetivos
+###Generales
+\begin{itemize}
+     \item Encontrar la Densidad Poblacional de los paises del mundo a lo largo de los años.
+     \item Encontrar si hay una relación entre la densidad poblacional y la felicidad de las personas.
+\end{itemize}
+
+###Especificos
+
+\begin{itemize}
+     \item Describir el dataset de Countries Population, encontrar un patrón del comportamiento de la población y pronosticarla en los próximos años.
+     \item Describir el dataset de World Happiness Report, encontrar las variables que más inciden en la felicidad de las personas y pronosticarla en los próximos años.
+     \item Comparar los pronosticos y observar si efectivamente hay una relación entre la densidad poblacional y la felicidad de las personas.
+\end{itemize}
+
+```{r include=FALSE}
+
+#Importamos Librerias
+library(dplyr)
+library(tidyr) 
+library(readxl)
+library(plyr)
+
+# Importamos DataSets
+h2015 <- read.csv("2015.csv")
+h2016 <- read.csv("2016.csv")
+h2017 <- read.csv("2017.csv")
+pWorld <- read.csv("WorldPopulation.csv")
+cWorld <- read.csv("CountriesOfTheWorld.csv")
+
+```
+
+#Descripción de los Datos
+A continuación se describen los datasets y así mismo cada una de las variables que estos tienen. Luego de eso es explicará el proceso de limpieza que se llevó a cabo para tomar en cuenta solo las variables que serán de utilidad para cumplir los objetivos planteados.
+
+##World Happiness Report
+
+El World Happiness Report es una encuesta histórica sobre el estado de la felicidad global. El primer informe se publicó en 2012, el segundo en 2013, el tercero en 2015 y el cuarto en la Actualización de 2016. The World Happiness 2017, que clasifica a 155 países por su nivel de felicidad, fue lanzado en las Naciones Unidas en un evento que celebra el Día Internacional de la Felicidad el 20 de marzo.
+
+Los rankings y puntajes de felicidad utilizan data de una encuesta de Gallup World. Las puntuaciones son basadas en las respuestas a las preguntas de evaluación de vida contenidas en esta encuesta. Estas preguntas se conocen como la Escalera de Cantril, esta les pide a los encuestados que piensen en una escalera con la mejor vida posible para ellos siendo un 10 y la peor vida posible siendo un 0. A continuación se describen las variables contenidas en este dataset.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|c|X|} 
+ \hline
+ \textbf{No.} & \textbf{Variable} & \textbf{Tipo}& \textbf{Descripción}\\
+ \hline
+  1 & Country & Factor & Nombre del país\\
+ \hline
+  2 & Region & Factor & Region a la que pertenece\\
+ \hline
+  3 & Happiness.Rank & int & Rango del país basado en el Happiness Score \\
+ \hline
+  4 & Happiness.Score & num & Puntuación obtenida de Encuesta \\
+ \hline
+  5 & Standard.Error & num & La desviación Estándar del Happiness Score \\
+ \hline
+  6 & Economy..GDP.per.Capita & num & El grado en que el Producto Interno Bruto del país contribuye al cálculo del puntaje de felicidad. \\
+ \hline
+  7 & Family & num & El grado en que la familia contribuye al cálculo del puntaje de felicidad. \\
+ \hline
+  8 & Health..Life.Expectancy & num & el grado en que la esperanza de vida contribuye al cálculo del puntaje de felicidad \\
+ \hline
+ 9 & Freedom & num & La medida en que la libertad contribuye al cálculo de la puntuación de la felicidad \\
+ \hline
+ 10 & Trust..Government.Corruption. & num & El grado en que la percepción de la corrupción contribuye al puntaje de felicidad \\
+ \hline
+ 11 & Generosity & num & El grado en que generosidad contribuye al cálculo del puntaje de felicidad \\
+ \hline
+ 12 & Dystopia.Residual & num & La medida en que la distopía residual contribuyó al cálculo de la puntuación de la felicidad \\
+ \hline
+ 13 & Year & num & Año en el que fue hecha la encuesta \\
+ \hline
+ 14 & Lower.Confidence.Interval & num & Intervalo de confianza más bajo del puntaje de felicidad \\*
+ \hline
+ 15 & Upper.Confidence.Interval & num & Intervalo de confianza superior del puntaje de felicidad \\*
+ \hline
+ 16 & Whisker.high & num & Bigote Superior \\*
+ \hline
+ 17 & Whisker.low & num & Bigote Inferior \\*
+ 
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+De las variables descritas en la tabla anterior se tenían 3 datasets, uno por cada año. El proceso de limpieza que se hizo con estos datos fue cuadrar las variables en todos los datasets, es decir, que se hizo que todos tuviesen las mismas variables con el mismo nombre. Luego se unieron los 3 datasets dejando al año como una variable más.
+
+
+```{r Limpieza Happiness, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#Juntamos Datasets de Happines en una nueva Variable
+h2015["year"] <- 2015
+h2016["year"] <- 2016
+h2017["year"] <- 2017
+
+h2015[c("Lower.Confidence.Interval","Upper.Confidence.Interval","Whisker.high","Whisker.low")] <- NA
+h2016[c("Standard.Error","Whisker.high","Whisker.low")] <- NA
+h2017[c("Standard.Error","Lower.Confidence.Interval","Upper.Confidence.Interval","Region")] <- NA
+
+hWorld <- rbind(h2015,h2016,h2017)
+```
+
+
+##Countries Population
+
+Este Dataset contiene la población de 217 paises a lo largo de 56 años, desde 1960 hasta el 2016. A continuación se detallan las variables de este dataset.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ |c|c|c|X|} 
+ \hline
+ \textbf{No.} & \textbf{Variable} & \textbf{Tipo}& \textbf{Descripción}\\
+ \hline
+  1 & i..Country & Factor & ID del país\\
+ \hline
+  2 & Country.Code & Factor & Código del país\\
+ \hline
+  3 & Indicator.Name & Factor & Nombre del indicador \\
+ \hline
+  4 & Indicator.Code & Factor & Código del indicador \\
+ \hline
+  5 & year & chr & Año de medida \\
+ \hline
+  6 & population & num & Población \\
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+
+El proceso de limpieza que se hizo con este dataset fue poner los años como valor en una fila ya que estos venían como columnas. Obteniendo 6 variables con 12,369 observaciones.
+
+```{r Limpieza Population, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#Ordenamos pWorld
+colnames(pWorld)[5:61] <- c("1960","1961","1962","1963","1964","1965","1966","1967","1968","1969","1970","1971","1972","1973","1974","1975","1976","1977","1978","1979","1980","1981","1982","1983","1984","1985","1986","1987","1988","1989","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
+pWorld <- gather(pWorld, year, population, 5:61)
+pWorld <- subset( pWorld, select = -X)
+
+```
+
+
+##Countries of the World
+
+Este dataset contiene información sobre población, región, tamaño del área, mortalidad infantil y más. Todos estos conjuntos de datos están formados por datos del gobierno de EE. UU. Las variables contenidas se detallan a continuación.
+
+
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ |c|c|c|X|} 
+ \hline
+ \textbf{No.} & \textbf{Variable} & \textbf{Tipo}& \textbf{Descripción}\\
+ \hline
+ 1 & Country & Factor & Nombre del país\\
+ \hline
+ 2 & Region & Factor & Región en la que se encuentra el país\\
+ \hline
+ 3 & Population & int & Población Actual \\
+ \hline
+ 4 & Area..sq..mi.. & int & Área superficial en $mi^2$ \\
+ \hline
+ 5 & Pop..Density..per.sq..mi.. & num & Densidad Poblacional en $personas/mi^2$ \\
+ \hline
+ 6 & Coastline..coast.area.ratio. & num & línea costera \\
+ \hline
+ 7 &   Net.migration & num & Migración neta \\
+ \hline
+ 8 & Infant.mortality..per.1000.births. & num & Mortalidad infantil (por 1000 nacimientos)\\
+ \hline
+ 9 & GDP....per.capita. & int & Producto Interno Bruto \\
+ \hline
+ 10 & Literacy.... & num & Porcentaje de Alfabetismo \\
+ \hline
+ 11 & Phones..per.1000. & num & Teléfonos por cada 1000 personas \\
+ \hline
+ 12 & Arable.... & num & Porcentaje de tierra cultivable \\
+ \hline
+ 13 & Crops.... & num & Porcentaje de cultivos \\
+ \hline
+ 14 & Other.... & num & Otros \\
+ \hline
+ 15 & Climate & num & Clima\\
+ \hline
+ 16 & Birthrate & num & Tasa de Nacimiento\\
+ \hline
+ 17 & Deathrate & num & Tasa de Mortalidad \\
+ \hline
+ 18 & Agriculture & num & Agricultura \\
+ \hline
+ 19 & Industry & num & Industria \\
+ \hline
+ 20 & Service & num & Servicio \\
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+
+Para este dataset fue necesario convertir algunas columnas de tipo Factos a Numeric, por lo que se reemplazó la "," por ".". Obteniendo un dataset con 227 observaciones y 20 variables. 
+
+```{r Limpieza Countries, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#Convertimos Factors a num/int reemplazando "," por "."
+cWorld$Coastline..coast.area.ratio.<- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Coastline..coast.area.ratio.)))
+cWorld$Pop..Density..per.sq..mi.. <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Pop..Density..per.sq..mi..)))
+cWorld$Net.migration <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Net.migration)))
+cWorld$Infant.mortality..per.1000.births. <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Infant.mortality..per.1000.births.)))
+cWorld$Literacy.... <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Literacy....)))
+cWorld$Phones..per.1000. <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Phones..per.1000.)))
+cWorld$Crops.... <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Crops....)))
+cWorld$Other.... <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Other....)))
+cWorld$Climate <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Climate)))
+cWorld$Arable.... <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Arable....)))
+cWorld$Birthrate <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Birthrate)))
+cWorld$Deathrate <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Deathrate)))
+cWorld$Agriculture <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Agriculture)))
+cWorld$Industry <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Industry)))
+cWorld$Service <- as.numeric(gsub(",", ".", gsub("\\.", "", cWorld$Service)))
+
+View(cWorld)
+View(hWorld)
+```
+
+
+#Exploración de Datos
+
+##World Happiness Report
+
+A continuación se muestran los histogramas de cada variable de *World Happiness Report*
+
+```{r echo=FALSE, fig1, fig.height = 4, fig.width = 9}
+
+hist(hWorld$Happiness.Score)
+hist(hWorld$Economy..GDP.per.Capita.)
+hist(hWorld$Family)
+hist(hWorld$Health..Life.Expectancy.)
+hist(hWorld$Freedom)
+hist(hWorld$Trust..Government.Corruption.)
+hist(hWorld$Generosity)
+
+```
+
+
+### Correlación entre variables
+
+Para poder observar si existe algún tipo de relación entre las variables numéricas del dataset, se realizó un gráfico de correlación en donde cada variable se puso contra cada variable del dataset. En el resultado podemos observar la correlación existente entre las variables:
+
+```{r Exploracion, include=FALSE}
+library(corrplot)
+#obtenemos las variables numericas
+hWorldNum <- hWorld[,(unlist(lapply(hWorld, is.numeric)))]
+hWorldNum[is.na(hWorldNum)] <- 0 #Cambiamos NA por 0
+#Renombramos las columnas
+colnames(hWorldNum)[1:15] <- c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15")
+#Calculamos la correlacion entre las variables
+happinesCor<-cor(hWorldNum)
+
+```
+```{r echo=FALSE}
+#Graficamos la correlacion 
+corrplot(happinesCor, method="number", varnames = NULL)
+```
+
+En el diagrama de correlación se observó que existen coeficientes de correlaciones de varios valores, sin embargo, para este experimento los valores arriba de un 0.4 fueron considerados como significativos. Por lo que las relaciones que más se destacan son las siguientes:
+
+\begin{itemize}
+     \item Happiness.Rank - Happiness.Score: 0.99
+     \item  Happiness.Rank - Economy..GDP.per.Capita: 0.79
+     \item  Happiness.Rank - Family: 0.64
+     \item  Happiness.Rank - Health..Life.Expectancy : 0.75
+     \item  Happiness.Rank - Freedom: 0.55
+     \item  Happiness.Rank - Dystopia.Residual: 0.55
+     \item  Happiness.Score - Economy..GDP.per.Capita: 0.79
+     \item  Happiness.Score - Family: 0.64
+     \item  Happiness.Score - Health..Life.Expectancy: 0.75
+     \item  Happiness.Score - Freedom: 0.56
+     \item  Happiness.Score - Trust..Government.Corruption: 0.41
+    \item   Happiness.Score - Dystopia.Residual: 0.49
+     \item  Economy..GDP.per.Capita - Family: 0.59
+    \item   Economy..GDP.per.Capita - Health..Life.Expectancy: 0.79
+     \item  Family - Health..Life.Expectancy: 0.49
+     \item  Family - Freedom: 0.43
+     \item  Freedom - Trust..Government.Corruption.: 0.49
+\end{itemize}
+
+Dentro de las correlaciones más significas, podemos resaltar que la existente entre *Happiness.Rank-Happiness.Score* es de 0.99, esto se debe a que el puesto del rank depende directamente de la puntuación obtenida en el test. Así mismo podemos observar que la familia, la economía y la esperanza de vida tienen gran influencia en el rank de felicidad de los países.
+
+También es importante aclarar que las correlaciones existentes entre una variable y las variables *Lower.Confidence.Interval*, *Upper.Confidence.Interval*, *Whisker.high* y *Whisker.low* fueron omitidas debido a que estas variables no se encuentran registradas en más de un dataset.
+
+##Countries Population
+
+Los hallazgos encontrados en el dataset de Countries Population son simples, debido a que se encontró que la variable population, que describe la población de cada país, depende únicamente de la variable year. Por ende, crear un modelo que describa o pronostique la población de cada país consiste en tratar de encontrar un patrón y un modelo entre la variable population y la variable year. Debido a que solo se necesita de la variable year, tomada en diferentes unidades de tiempo, para describir cómo se comporta la población en cada país. 
+
+###Gráficas de Población
+
+A continuación se muestran las gráficas de población de algunos países:
+
+```{r echo=FALSE, fig2, fig.height = 2.5, fig.width = 3.5}
+pWorldSorted <- pWorld[order(pWorld$ï..Country),]
+
+paises <- list()
+for (i in c(1:217)) {
+  N <- i*57+1
+  paises[[paste0("element", i)]] <- pWorldSorted[(N-57):(N-1),1:6]
+}
+for (i in c(1:217)) {
+plot(x=paises[[i]]$year, y=paises[[i]]$population, ylab="Población", xlab="Años", type="l",col="blue",main = levels(pWorldSorted$ï..Country)[i])
+}
+
+```
+
+### Frecuencias entre las Variables
+
+```{r echo=FALSE}
+#columnas <- colnames(hWorldNum)
+#for (i in 1:length(columnas)) {
+#  print(table(hWorldNum[i]))
+#}
+
+
+eza <- prop.table(hWorldNum)
+jpeg(filename="correlogramon.jpeg", width = 1920, height = 1080)
+View(cWorld)
+View(hWorldNum)
+
+plot(eza[,1:15], col="blue" , main= "Tabla de Frecuencias")
+
+
+
+#ftable(eza)
+
+```
+
+##Countries of the World
+
+Como se mencionó anteriormente este dataset contiene distintos datos de los paises del mundo. A continuación se muestra un resumen de cada variable de este dataset:
+
+```{r echo=FALSE}
+library(knitr)
+cWorld_1 <- read.csv("countriesOfTheWorld.csv")
+kable(summary(cWorld_1[c(1:4)]), "latex", booktabs = T)
+kable(summary(cWorld_1[c(5:8)]), "latex", booktabs = T)
+kable(summary(cWorld_1[c(9:12)]), "latex", booktabs = T)
+kable(summary(cWorld_1[c(13:16)]), "latex", booktabs = T)
+kable(summary(cWorld_1[c(17:20)]), "latex", booktabs = T)
+```
+
+### Correlación entre variables
+
+Para poder observar si existe algún tipo de relación entre las variables numéricas del dataset , se realizó un gráfico de correlación en donde cada variable se puso contra cada variable del dataset. En el resultado podemos observar la correlación existente entre las variables:
+
+```{r Correlacion Countries, echo=FALSE}
+#Renombramos las columnas
+colnames(cWorld)[1:20] <- c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20")
+#obtenemos las variables numericas
+cWorldNum <- cWorld[,(unlist(lapply(cWorld, is.numeric)))]
+cWorldNum[is.na(cWorldNum)] <- 0 #Cambiamos NA por 0
+#Calculamos la correlacion entre las variables
+CountriesCor<-cor(cWorldNum)
+#Graficamos la correlacion 
+corrplot(CountriesCor, method="number", varnames = NULL)
+```
+
+En el diagrama de correlación se observó que existen coeficientes de correlaciones de varios valores, sin embargo, para este experimento los valores arriba de un 0.4 fueron considerados como significativos. Por lo que las relaciones que más se destacan son las siguientes:
+
+\begin{itemize}
+     \item  Population - Area..sq..mi..: 0.47
+     \item  Infant.mortality..per.1000.births. - GDP....per.capita.: 0.59
+     \item  Infant.mortality..per.1000.births. - Phones..per.1000.: 0.65
+     \item  Infant.mortality..per.1000.births. - Birthrate: 0.84
+     \item  Infant.mortality..per.1000.births. - Deathrate: 0.66
+     \item  Infant.mortality..per.1000.births. - Agriculture: 0.71
+     \item  GDP....per.capita. - Phones..per.1000.: 0.83
+     \item  GDP....per.capita. - Birthrate: 0.61
+     \item  GDP....per.capita. - Agriculture: 0.56
+     \item  Literacy.... - Birthrate: 0.4
+     \item  Phones..per.1000. - Birthrate: 0.68
+     \item  Phones..per.1000. - Agriculture: 0.57
+     \item  Arable.... - Other....: 0.73
+     \item  Crops.... - Other....: 0.51
+     \item  Birthrate - Deathrate: 0.42
+     \item  Birthrate - Agriculture: 0.66
+     \item  Deathrate - Agriculture: 0.4
+\end{itemize}
+
+En los resultados obtenidos en el diagrama de correlación, se logró observar que la variable *Infant.mortality..per.1000.births* es la variable que tiene mayor relación con otras variables dentro del dataset, seguida de *GDP....per.capita.*. También, la correlación de mayor magnitud es la existente entre las variables *Infant.mortality..per.1000.births.* y *Birthrate*.
+
+## Análisis de PCA
+
+Dados los datasets que se tienen *World Happiness Report*,*World Population* y *Countries of the World*; el único dataset en el que valdría la pena analizar sus componentes principales es el de *World Happiness Report*; eso es porque es el único dataset en el que tiene sentido una reducción de dimensionalidad ya que tiene bastantes variables que podrían estar relacionadas con la felicidad de la gente. Por otro lado, los otros 2 Datasets no tienen una dimensión muy alta (en el caso de *World Population*) o no se están relacionando las variables (en el caso de *Countries of the world*). 
+
+Previo a realizar el análisis de PCA se midió la adecuación muestral utilizando los coeficientes de Kaiser-Meyer-Olkin, la prueba de esfericidad de Bartlett y el estadístico de Barlett. Los resultados fueron los siguientes:
+
+\begin{center}
+\begin{tabular}{|c|c|c|} 
+ \hline
+ \textbf{KMO} & \textbf{Barlett} & \textbf{RMS}\\
+ \hline
+  0.329113 & 21154 & 0.045415\\
+ \hline
+ \hline
+\end{tabular}
+\end{center}
+
+
+Debido a que la adecuación muestral es inaceptable no se llevó a cabo el analisis de PCA ni un análisis factorial.
+
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2) 
+library(readxl)
+library(gmodels)
+library(Hmisc)
+library(ggthemes)
+library(cluster) #Para calcular la silueta
+library(e1071)#para cmeans
+library(mclust) #mixtures of gaussians
+library(fpc) #para hacer el plotcluster
+library(GGally)
+library(corrplot)
+library(PerformanceAnalytics)
+library(rela)
+library(psych)
+library(FactoMineR)
+pafTestN<-paf(as.matrix(hWorldNum[,1:15])) # 
+pafTestN$KMO                          # Adecuación muestral regular
+pafTestN$Bartlett                     # Mientras mas alto mejor 
+summary(pafTestN)             #Se obtiene un resumen de los datos
+cortest.bartlett(hWorldNum[,-1])  #Nivel de Significancia de los datos
+
+
+#Normalizamos las variables
+newTestN <- na.omit(hWorldNum) 
+testNorm <- prcomp(newTestN, scale = TRUE)
+
+summary(testNorm)
+
+
+#Realizamos el análisis PCA
+testPCA<-PCA(newTestN[,-1],ncp=ncol(newTestN[,-1]), scale.unit = T)
+summary(testPCA) #Resumen del Analisis PCA
+```
+```{r echo=FALSE}
+testPCA<-PCA(newTestN[,-1],ncp=ncol(newTestN[,-1]), scale.unit = T)
+```
+
+#Conclusiones y Hallazgos
+
+Para el dataset World Happiness Report, se puede comenzar mencionando que las variables *Area..sq..mi..*, *Pop..Density..per.sq..mi..* y *Crops....* presentan tener multicolinealidad. Por lo que se recomiendo que sean removidas en el caso que se planee calcular un modelo lineal múltiple o que esta característica sea tomada en cuenta al realizar algun analisis con el dataset. 
+
+Continuamos mencionando la relación existente entre entre variables como *Happiness.Rank*, la cual describe la posición en la que se encuentra cada pais segun su felicidad, en donde el tema familiar, la expectancia de vida y la economía tiene impacto directo. Así com que el grado que impacto el producto interno bruto en la felicidad es bastante parecido al grado de impacto de la expectancia de vida. 
+
+Los hallazgos encontrados en el dataset de *Countries Population* son simples, debido a que se encontró que la variable *population*, que describe la población de cada país, depende únicamente de la variable *year*. Ya que se encontró en el diagrama de correlación que cada año presenta tener una relación estrecha con los demás años.  
+
+Por ende, crear un modelo que describa o pronostique la población de cada país consiste en realizar una Regresión Lineal Simple entre la variable *population* y la variable *year*. Debido a que solo se necesita de la variable year, tomada en diferentes unidades de tiempo, para describir cómo se comporta la población en cada país. 

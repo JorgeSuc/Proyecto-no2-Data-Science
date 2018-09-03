@@ -1,0 +1,346 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Proyecto 2 - Analisis Exploratorio},
+            pdfauthor={Manuel Valenzuela 15072, Davis Alvarez 15842, Jorge Súchite 15293},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Proyecto 2 - Analisis Exploratorio}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Manuel Valenzuela 15072, Davis Alvarez 15842, Jorge Súchite 15293}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{23 de agosto de 2018}
+
+\usepackage{tabularx}
+
+\begin{document}
+\maketitle
+
+\section{Descripción del Tema}\label{descripcion-del-tema}
+
+Para este segundo proyecto propone observar la población de los paises
+del mundo a lo largo de los años y así mismo su área superficial, con
+estos datos obtener una densidad poblacional y ver si esta esta
+relacionada de alguna manera con la felicidad de las personas. Con estos
+datos se tratará de hacer 2 pronósticos. El primero de la población en
+base a su propio comportamiento; y el segundo, de la felicidad del mundo
+en base a su propio comportamiento y así mismo a la densidad poblacional
+a lo largo del tiempo.
+
+Para hacer esto se uilizarán 3 datasets, el primero es
+\href{https://www.kaggle.com/unsdsn/world-happiness/home}{World Happiness Report},
+el cual es un dataset que contiene una puntuación de felicidad anotada
+según producción económica, apoyo social, etc. El segundo es
+\href{https://www.kaggle.com/centurion1986/countries-population}{Countries Population},
+el cual contiene la población de cada país a lo largo de los años,y por
+último, el tercero sería
+\href{https://www.kaggle.com/fernandol/countries-of-the-world}{Countries of the World},
+del cual se obtendría el área superficial de cada país.
+
+\section{Problema Científico}\label{problema-cientifico}
+
+Lo que se buscará realizar con este proyecto es observar la densidad
+poblacional y la felicidad de las personas de cada país a lo largo del
+tiempo, ver si tienen algún tipo de relación entre sí y tratar de
+pronosticar que tan felices serán las personas en los años próximos. Así
+mismo, observando el comportamiento de la población a lo largo de los
+años se buscará pronosticar la población de los paises en los próximos
+años.
+
+\section{Objetivos}\label{objetivos}
+
+\begin{itemize}
+     \item Encontrar la Densidad Poblacional de los paises del mundo a lo largo de los años.
+     \item Encontrar si hay una relación entre la densidad poblacional y la felicidad de las personas.
+     \item Pronosticar la felicidad de las personas por país en los próximos años.
+     \item Pronosticar la población por país en los próximos años.
+\end{itemize}
+
+\section{Descripción de los Datos}\label{descripcion-de-los-datos}
+
+A continuación se describen los datasets y así mismo cada una de las
+variables que estos tienen. Luego de eso se explicará el proceso de
+limpieza que se llevó a cabo para tomar en cuenta solo las variables que
+serán de utilidad para cumplir los objetivos planteados.
+
+\subsection{World Happiness Report}\label{world-happiness-report}
+
+El World Happiness Report es una encuesta histórica sobre el estado de
+la felicidad global. El primer informe se publicó en 2012, el segundo en
+2013, el tercero en 2015 y el cuarto en la Actualización de 2016. The
+World Happiness 2017, que clasifica a 155 países por su nivel de
+felicidad, fue lanzado en las Naciones Unidas en un evento que celebra
+el Día Internacional de la Felicidad el 20 de marzo.
+
+Los rankings y puntajes de felicidad utilizan data de una encuesta de
+Gallup World. Las puntuaciones son basadas en las respuestas a las
+preguntas de evaluación de vida contenidas en esta encuesta. Estas
+preguntas se conocen como la Escalera de Cantril, esta les pide a los
+encuestados que piensen en una escalera con la mejor vida posible para
+ellos siendo un 10 y la peor vida posible siendo un 0. A continuación se
+describen las variables contenidas en este dataset.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ |c|X|} 
+ \hline
+ \textbf{No.} & \textbf{Variable} & \textbf{Tipo}& \textbf{Descripción}\\
+ \hline
+  1 & Country & Nombre del país\\
+ \hline
+  2 & Region & Region a la que pertenece\\
+ \hline
+  3 & Happiness.Rank & Rango del país basado en el Happiness Score \\
+ \hline
+  4 & Happiness.Score & Puntuación obtenida de Encuesta \\
+ \hline
+  5 & Standard.Error & La desviación Estándar del Happiness Score \\
+ \hline
+  6 & Economy..GDP.per.Capita & El grado en que el Producto Interno Bruto del país contribuye al cálculo del puntaje de felicidad. \\
+ \hline
+  7 & Family & El grado en que la familia contribuye al cálculo del puntaje de felicidad. \\
+ \hline
+  8 & Health..Life.Expectancy & el grado en que la esperanza de vida contribuye al cálculo del puntaje de felicidad \\
+ \hline
+ 9 & Freedom & La medida en que la libertad contribuye al cálculo de la puntuación de la felicidad \\
+ \hline
+ 10 & Trust..Government.Corruption. & El grado en que la percepción de la corrupción contribuye al puntaje de felicidad \\
+ \hline
+ 11 & Generosity & El grado en que generosidad contribuye al cálculo del puntaje de felicidad \\
+ \hline
+ 12 & Dystopia.Residual & La medida en que la distopía residual contribuyó al cálculo de la puntuación de la felicidad \\
+ \hline
+ 13 & Year & Año en el que fue hecha la encuesta \\
+ \hline
+ 14 & Lower.Confidence.Interval & Intervalo de confianza más bajo del puntaje de felicidad \\
+ \hline
+ 15 & Upper.Confidence.Interval & Intervalo de confianza superior del puntaje de felicidad \\
+ \hline
+ 16 & Whisker.high & Bigote Superior \\
+ \hline
+ 17 & Whisker.low & Bigote Inferior \\
+ 
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+De las variables descritas en la tabla anterior se tenían 3 datasets,
+uno por cada año. El proceso de limpieza que se hizo con estos datos fue
+cuadrar las variables en todos los datasets, es decir, que se hizo que
+todos tuviesen las mismas variables con el mismo nombre. Luego se
+unieron los 3 datasets dejando al año como una variable más.
+
+\subsection{Countries Population}\label{countries-population}
+
+Este Dataset contiene la población de 217 paises a lo largo de 56 años,
+desde 1960 hasta el 2016. A continuación se detallan las variables de
+este dataset.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ |c|X|} 
+ \hline
+ \textbf{Variable} & \textbf{Descripción}\\
+ \hline
+ i..Country & ID del país\\
+ \hline
+ Country.Code & Código del país\\
+ \hline
+ Indicator.Name & Nombre del indicador \\
+ \hline
+ Indicator.Code & Código del indicador \\
+ \hline
+ year & Año de medida \\
+ \hline
+ population & Población \\
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+El proceso de limpieza que se hizo con este dataset fue poner los años
+como valor en una fila ya que estos venían como columnas.
+
+\subsection{Countries of the World}\label{countries-of-the-world}
+
+Este dataset contiene información sobre población, región, tamaño del
+área, mortalidad infantil y más. Todos estos conjuntos de datos están
+formados por datos del gobierno de EE. UU. Las variables contenidas se
+detallan a continuación.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ |c|X|} 
+ \hline
+ \textbf{Variable} & \textbf{Descripción}\\
+ \hline
+ Country & Nombre del país\\
+ \hline
+ Region & Región en la que se encuentra el país\\
+ \hline
+ Population & Población Actual \\
+ \hline
+ Area..sq..mi.. & Área superficial en $mi^2$ \\
+ \hline
+ Pop..Density..per.sq..mi.. & Densidad Poblacional en $personas/mi^2$ \\
+ \hline
+ Coastline..coast.area.ratio. & línea costera \\
+ \hline
+  Net.migration & Migración neta \\
+ \hline
+ Infant.mortality..per.1000.births. & Mortalidad infantil (por 1000 nacimientos)\\
+ \hline
+ GDP....per.capita. & Producto Interno Bruto \\
+ \hline
+ Literacy.... & Porcentaje de Alfabetismo \\
+ \hline
+ Phones..per.1000. & Teléfonos por cada 1000 personas \\
+ \hline
+ Arable.... & Porcentaje de tierra cultivable \\
+ \hline
+ Crops.... & Porcentaje de cultivos \\
+ \hline
+ Other.... & Otros \\
+ \hline
+ Climate & Clima\\
+ \hline
+ Birthrate & Tasa de Nacimiento\\
+ \hline
+ Deathrate & Tasa de Mortalidad \\
+ \hline
+ Agriculture & Agricultura \\
+ \hline
+ Industry & Industria \\
+ \hline
+ Service & Servicio \\
+ \hline
+ \hline
+\end{tabularx}
+\end{center}
+
+Para este dataset no fue necesario llevar a cabo ningún proceso de
+limpieza.
+
+\section{Exploración de Datos}\label{exploracion-de-datos}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{View}\NormalTok{(hWorld)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Conclusiones y Hallazgos}\label{conclusiones-y-hallazgos}
+
+
+\end{document}
